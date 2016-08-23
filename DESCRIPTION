@@ -1,0 +1,11 @@
+Package: phaseOne
+Type: Package
+Title: Phase 1 visualisation package
+Version: 0.0
+Date: 2016-05-09
+Author: Peter Dutton
+Description: This is an attempt to create a visualised phase 1 trial.
+Depends: opencpu, dfcrm, R2jags
+License: Apache2
+LazyData: true
+RoxygenNote: 5.0.1

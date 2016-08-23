@@ -1,0 +1,63 @@
+
+.col-md-6 {
+  min-height: 1px;
+}
+
+.nav {
+  margin-top: 10px;
+}
+
+.tab-pane {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border: 1px solid grey;
+}
+
+.frm {
+  display: inline-block;
+  /* border: 1px solid white; */
+  vertical-align: middle;
+  padding: 5px;
+  margin: 0px;
+}
+
+.center {
+  text-align: center;
+}
+
+/* graphs */
+
+path { 
+    stroke: steelblue;
+    stroke-width: 2;
+    fill: none;
+}
+
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: white;
+  text-color: white;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+/* formatting inputs */
+input {
+  margin: 4px;
+  min-height: 30px;
+  padding: 5px;
+  text-align: center;
+  color: white;
+  background-color: grey;
+  border: none;
+}
+
+select {
+  background-color: grey;
+  color: white;
+  margin: 4px;
+  min-height: 30px;
+}
