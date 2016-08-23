@@ -22,62 +22,71 @@
 
   <body>
     
-    <div class = 'container'>
+  <div class="row" style="padding:15px">
+    <div class="col-md-3">
       <div class="tabbable">
         <ul id="tabs" class="nav nav-tabs">
           <li class="active mtab"><a href='#setup' data-toggle="tab">Setup</a></li>
           <li class="mtab"><a href='#simulate' data-toggle="tab">Simulate patient</a></li>
         </ul>
-        <div id="tcontent" class="tab-content">
+        <div id="tside" class="tab-content">
           <div id="setup" class='tab-pane active'>
             <div class="row center">
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <h5>Target toxicity level</h5>
                 </div>
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <input id='target' class="vcenter" type="number" min='0' max='1' step='0.01' value='0.4'>
                 </div>
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <h5>Choose model</h5>
                 </div>
                 <div class="col-xs-6 frm">
-                  <select id='smodel' class="vcenter">
+                  <select id='smodel' style='max-width: 200px;' class="vcenter">
                   </select>
                 </div>
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <h5>Dose selection criteria</h5>
                 </div>
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <h5>Closest to target toxicity level without dose skipping</h5>
                 </div>
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <h5>Cohort Size</h5>
                 </div>
-                <div class="col-xs-2 frm">
+                <div class="col-xs-6 frm">
                   <input id='cohortSize' class="vcenter" type="number" min='0' max='5' step='1' value='2'>
               </div>
             </div>
           </div>
           <div id="simulate" class='tab-pane'>
             <div class="row center">
-              <div class="col-xs-4 frm">
-              <button id="submitbutton" type="button" class="btn btn-primary">Simulate a patient</button>
+              <div class="col-xs-6 frm">
+              <button id="submitbutton" type="button" class="btn btn-primary">Simulate One patient</button>
               </div>
-              <div class="col-xs-2 frm">
+              <div class="col-xs-6 frm">
+              </div>
+              <div class="col-xs-6 frm">
               <h5>Simulate trial with patients:</h5>
               </div>
-              <div class="col-xs-2 frm">
+              <div class="col-xs-6 frm">
               <input id='sPatients' class="vcenter" type="number" min='0' step='1' value='10'>
               </div>
-              <div class="col-xs-4 frm">
+              <div class="col-xs-6 frm">
               <button id="submitMany" type="button" class="btn btn-primary">Simulate <span id="manyPatients">10</span> patient Trial</button>
               </div>
-              <div class="col-xs-4 frm">
+              <div class="col-xs-6 frm">
               <button id="resetButton" type="button" class="btn btn-primary">Reset Data</button>
               </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+      
+      
+      
+    <div class="col-md-9">
       <div class="tabbable">
         <ul id="tabs" class="nav nav-tabs">
           <li class="mtab"><a href='#prior' data-toggle="tab">Prior</a></li>
@@ -108,6 +117,7 @@
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
 
@@ -155,8 +165,8 @@
       d3.select('#submitMany')
         .on('click', function() {
         
-          resetTrialData();
-          resetGraph();
+          //resetTrialData();
+          //resetGraph();
           addPatients(sPatients);
           
         });

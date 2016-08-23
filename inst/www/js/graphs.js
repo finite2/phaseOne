@@ -49,7 +49,7 @@ function resetGraph() {
 
 
 function updateGraphSizevalues(g, hRatio){
-  g.fullWidth = Math.max(100,d3.select('.container').node().getBoundingClientRect().width - 40);
+  g.fullWidth = Math.max(100,d3.select('#tcontent').node().getBoundingClientRect().width - 40);
   g.fullHeight = g.fullWidth * hRatio;
 }
 
