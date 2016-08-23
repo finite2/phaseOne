@@ -33,7 +33,11 @@ path {
     fill: none;
 }
 
-
+.axis text {
+  fill: white;
+  shape-rendering: crispEdges;
+  font-size: 1.2em;
+}
 
 .axis path,
 .axis line {

@@ -1,7 +1,7 @@
 
 var param = {};
 param.speed = 1000;
-param.rConnected = true;
+param.rConnected = false;
 
 var setup = {};
 setup.target = 0.4;
@@ -63,23 +63,17 @@ function paintHistogram(g, values) {
   g.height = g.fullHeight - g.margin.top - g.margin.bottom;
 
   // Set the ranges
-  g.x = d3.scale.linear().range([0, g.width]);
-  g.y = d3.scale.linear().range([g.height, 0]);
+  g.x = d3.scaleLinear().range([0, g.width]).domain([Math.min(...values), Math.max(...values)]);
+  g.y = d3.scaleLinear().range([g.height, 0]).domain([0, d3.max(data, function(d) { return d.y; })]);
   
-  g.xAxis = d3.svg.axis().scale(g.x)
-      .orient("bottom").ticks(8);
-  g.yAxis = d3.svg.axis().scale(g.y)
-      .orient("left").ticks(5);
+  g.xAxis = d3.axisBottom().scale(g.x).ticks(8);
+  g.yAxis = d3.axisLeft().scale(g.y).ticks(5);
   
-  // Scale the range of the data
-  g.x.domain([Math.min(...values), Math.max(...values)]);
   
   var data = d3.layout.histogram()
     .frequency(false)
     (values);
   
-  g.y.domain([0, d3.max(data, function(d) { return d.y; })])
-    
   
   var svg = d3.select("#" + g.id)
     .append("svg")
@@ -127,23 +121,21 @@ function paintModelGraph(g) {
   
 
   // Set the ranges
-  g.x = d3.scale.linear().range([0, g.width]);
-  g.y = d3.scale.linear().range([g.height, 0]);
+  g.x = d3.scaleLinear().range([0, g.width]).domain([0.5, doseLevels.length + 0.5]);
+  g.y = d3.scaleLinear().range([g.height, 0]).domain([0, 1]);
   // Define the axes
-  g.xAxis = d3.svg.axis().scale(g.x)
-      .orient("bottom").ticks(8);
-  g.yAxis = d3.svg.axis().scale(g.y)
-      .orient("left").ticks(5);
+  g.xAxis = d3.axisBottom().scale(g.x).ticks(8);
+  g.yAxis = d3.axisLeft().scale(g.y).ticks(5);
   // Define the line
-  g.valueline = d3.svg.line()
+  g.valueline = d3.line()
       .x(function(d) { return g.x(d.x); })
       .y(function(d) { return g.y(d.y); });
   
-  g.valuelinel = d3.svg.line()
+  g.valuelinel = d3.line()
       .x(function(d) { return g.x(d.x); })
       .y(function(d) { return g.y(d.yl); });
   
-  g.valuelineu = d3.svg.line()
+  g.valuelineu = d3.line()
       .x(function(d) { return g.x(d.x); })
       .y(function(d) { return g.y(d.yu); });
   // Adds the svg canvas
@@ -154,10 +146,6 @@ function paintModelGraph(g) {
     .append("g")
       .attr("transform", 
         "translate(" + g.margin.left + "," + g.margin.top + ")");
-
-  // Scale the range of the data
-  g.x.domain([0.5, doseLevels.length + 0.5]);
-  g.y.domain([0, 1]);
 
   g.cols = ['white', 'red'];
 
@@ -250,6 +238,102 @@ newPatient = function() {
 }
 
 
+function paintDoseGraph(g) {
+  updateGraphSizevalues(g, 0.4);
+
+  // Set the dimensions of the canvas / graph
+  g.margin = {top: 30, right: 20, bottom: 30, left: 50};
+  g.width = g.fullWidth - g.margin.left - g.margin.right;
+  g.height = g.fullHeight - g.margin.top - g.margin.bottom;
+  
+  
+
+  // Set the ranges
+  g.x = d3.scaleLinear().range([0, g.width]).domain([-0.2, 8.2]);
+  g.y = d3.scaleLinear().range([g.height, 0]).domain([0.5, doseLevels.length + 0.5]);
+  // Define the axes
+  g.xAxis = d3.axisBottom().scale(g.x).ticks(8);
+  g.yAxis = d3.axisLeft().scale(g.y).ticks(doseLevels.length);
+  // Define the line
+
+  // Adds the svg canvas
+  g.svg = d3.select("#" + g.id)
+    .append("svg")
+      .attr("width", g.width + g.margin.left + g.margin.right)
+      .attr("height", g.height + g.margin.top + g.margin.bottom)
+    .append("g")
+      .attr("transform", 
+        "translate(" + g.margin.left + "," + g.margin.top + ")");
+
+
+  g.cols = ['white', 'red'];
+
+  g.svg.append("g")
+    .attr("id", "Hlines")
+  
+  d3.select('#Hlines')
+    .selectAll('line').data(doseLevels)
+      .enter()
+      .append('line')
+      .attr('x1', g.x(g.x.domain()[0]))
+      .attr('x2', g.x(g.x.domain()[1]))
+      .attr('y1', function(d,i) {return g.y(i + 1.5);})
+      .attr('y2', function(d,i) {return g.y(i + 1.5);})
+      .attr("stroke-width", 2)
+      .attr('stroke', 'grey')
+      .style("stroke-dasharray", ("3, 3"));
+  
+  // Add the X Axis
+  g.svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + g.height + ")")
+    .style('fill', 'white')
+    .call(g.xAxis);
+
+  // Add the Y Axis
+  g.svg.append("g")
+    .attr("class", "y axis")
+    .style('fill', 'white')
+    .call(g.yAxis);
+
+  g.svg.append('g')
+    .attr('id', 'dosePatients');
+}
+
+
+function addDosePatient(g) {
+  d3.select('#dosePatients')
+  .selectAll('circle').data(trialData.patientData)
+    .enter()
+    .append('circle')
+    .attr('id','pd' + patients)
+    .attr('cx', function(d, i) {return g.x(i + 1);})
+    .attr('cy', function(d, i) {return g.y(d.x);})
+    .attr('r', 8)
+    .attr('fill', function(d, i) {return g.cols[d.y];});
+
+}
+
+function rescalex(g, newMax) {
+  
+  // Set the ranges
+  g.x = d3.scaleLinear().range([0, g.width]).domain([0.5, newMax + 0.5]);
+  // Define the axes
+  g.xAxis = d3.axisBottom().scale(g.x).ticks(newMax);
+  g.svg.select('.x')
+    .transition()
+      .duration(1500)
+      .call(g.xAxis);
+
+  
+  g.svg.selectAll('circle')
+   .data(trialData.patientData)
+   .transition()
+      .duration(1500)
+      .attr('cx',function(d, i) {return g.x(i + 1)})
+
+}
+
 function addPatient(g) {
 
   newPatient();
@@ -267,9 +351,18 @@ function addPatient(g) {
       .attr('cy',g.y(trialData.patientData[trialData.patients].y + (trialData.patientData[trialData.patients].y === 1 ? -0.05*trialData.patientData[trialData.patients].ecount: 0.05*trialData.patientData[trialData.patients].ecount)))
       .attr('fill', g.cols[trialData.patientData[trialData.patients].y])
   
+  addDosePatient(doseGraph)
+  console.log(trialData.patientData.length)
+  console.log(doseGraph.xMax)
+  if(doseGraph.xMax < trialData.patientData.length){
+    doseGraph.xMax = trialData.patientData.length
+    rescalex(doseGraph, doseGraph.xMax)
+  }
   if (param.rConnected) {
     model.fun(g)
   }
+    
+    
 }
 
 function addPatients(n) {
@@ -326,7 +419,7 @@ resetTrialData()
 priorGraph = {};
 priorGraph.id = 'priorModel';
 priorGraph.prior = true;
-paintModelGraph(priorGraph);
+// paintModelGraph(priorGraph);
 
 priorHist0 = {}
 priorHist0.id = 'priorHist0';
@@ -342,6 +435,11 @@ postHist0.id = 'postHist0';
 
 postHist1 = {}
 postHist1.id = 'postHist1';
+
+doseGraph = {}
+doseGraph.id = 'doseGraph';
+doseGraph.xMax = 8;
+paintDoseGraph(doseGraph);
 
 
 if (param.rConnected) {
@@ -359,3 +457,4 @@ postGraph.id = 'postModel';
 postGraph.prior = false;
 postGraph.posterior = true;
 paintModelGraph(postGraph);
+

@@ -13,7 +13,8 @@
   
      <!-- <script type="text/javascript" src="js/jquery-2.2.0.min.js"></script> -->
     <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/d3.js"></script>
+    <!-- <script type="text/javascript" src="js/d3.js"></script> -->
+  <script src="https://d3js.org/d3.v4.js"></script>
     <script type="text/javascript" src="js/d3_functions/multiplot_utilities.js"></script>
   
   <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
@@ -92,6 +93,7 @@
           <li class="mtab"><a href='#prior' data-toggle="tab">Prior</a></li>
           <li class="active mtab"><a href='#graph' data-toggle="tab">Fitted Model</a></li>
           <li class="mtab"><a href='#posterior' data-toggle="tab">Posterior</a></li>
+          <li class="mtab"><a href='#dose' data-toggle="tab">Dose</a></li>
         </ul>
         <div id="tcontent" class="tab-content">
           <div id="prior" class='tab-pane'>
@@ -116,7 +118,10 @@
               </div>
             </div>
           </div>
-        </div>
+          <div id="dose" class='tab-pane'>
+            <div id="doseGraph">
+            </div>
+          </div>
       </div>
       </div>
     </div>
