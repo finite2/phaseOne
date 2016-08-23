@@ -22,13 +22,14 @@
 </head>
 
   <body>
-    
+  <div>
   <div class="row" style="padding:15px">
     <div class="col-md-3">
       <div class="tabbable">
         <ul id="tabs" class="nav nav-tabs">
           <li class="active mtab"><a href='#setup' data-toggle="tab">Setup</a></li>
           <li class="mtab"><a href='#simulate' data-toggle="tab">Simulate patient</a></li>
+          <li class="mtab"><a href='#truth' data-toggle="tab">Truth</a></li>
         </ul>
         <div id="tside" class="tab-content">
           <div id="setup" class='tab-pane active'>
@@ -53,10 +54,23 @@
                   <h5>Closest to target toxicity level without dose skipping</h5>
                 </div>
                 <div class="col-xs-6 frm">
+                  <h5>Number of dose levels</h5>
+                </div>
+                <div class="col-xs-6 frm">
+                  <input id='nDoses' class="vcenter" type="number" min='3' max='10' step='1' value='7'>
+                </div>
+                <div class="col-xs-6 frm">
                   <h5>Cohort Size</h5>
                 </div>
                 <div class="col-xs-6 frm">
                   <input id='cohortSize' class="vcenter" type="number" min='0' max='5' step='1' value='2'>
+              </div>
+            </div>
+          </div>
+          <div id = "truth" class="tab-pane">
+            <div class="row center">
+              
+              <div id="doses">
               </div>
             </div>
           </div>
@@ -84,6 +98,7 @@
       </div>
     </div>
   </div>
+    
       
       
       
@@ -91,9 +106,9 @@
       <div class="tabbable">
         <ul id="tabs" class="nav nav-tabs">
           <li class="mtab"><a href='#prior' data-toggle="tab">Prior</a></li>
-          <li class="active mtab"><a href='#graph' data-toggle="tab">Fitted Model</a></li>
+          <li class="active mtab"><a href='#fitted' data-toggle="tab">Fitted Model</a></li>
           <li class="mtab"><a href='#posterior' data-toggle="tab">Posterior</a></li>
-          <li class="mtab"><a href='#dose' data-toggle="tab">Dose</a></li>
+          <!--<li class="mtab"><a href='#dose' data-toggle="tab">Dose</a></li>-->
         </ul>
         <div id="tcontent" class="tab-content">
           <div id="prior" class='tab-pane'>
@@ -106,8 +121,13 @@
               </div>
             </div>
           </div>
-          <div id="graph" class='tab-pane active'>
+          <div id="fitted" class='tab-pane active'>
+            <div id="graph">
+            </div>
+            <div id="doseGraph">
+            </div>
           </div>
+          
           <div id="posterior" class='tab-pane'>
             <div class="row">
               <div id="postHist0" class="col-md-6">
@@ -119,72 +139,22 @@
             </div>
           </div>
           <div id="dose" class='tab-pane'>
-            <div id="doseGraph">
-            </div>
+            
           </div>
       </div>
       </div>
     </div>
+  </div>
+  </div>
 
     <script type="text/javascript" src="js/random.js"></script>
     <script type="text/javascript" src="js/model.js"></script>
     <script type="text/javascript" src="js/modelR.js"></script>
     <script type="text/javascript" src="js/graphs.js"></script>
+    <script type="text/javascript" src="js/simulation.js"></script>
+    <script type="text/javascript" src="js/ui.js"></script>
     <script type="text/javascript" src="js/main.js"></script>
-    <script>
-        d3.select('#target')
-        .on('input', function(){
-        setup.target = this.value;
-        d3.select('#targetLine')
-          .transition()
-          .duration(param.speed)
-            .attr("y1", y(setup.target))
-            .attr("y2", y(setup.target))
-        
-      });
-      
-      d3.select("#smodel")
-        .on('change', function(){
-          model = models[d3.select('#smodel').property('selectedIndex')];
-          console.log(model.name);
-          rerunModel();
-        });
-      
-      d3.select('#submitbutton')
-        .on('click', function() {
-        
-          addPatient(modelGraph);
-          
-        });
-      
-      d3.select('#sPatients')
-        .on('input', function(){
-          sPatients = this.value
-          d3.select('#manyPatients').text(sPatients)
-        })
-      
-      d3.select('#cohortSize')
-        .on('input', function(){
-          cohortSize = this.value;
-        })
-      
-      d3.select('#submitMany')
-        .on('click', function() {
-        
-          //resetTrialData();
-          //resetGraph();
-          addPatients(sPatients);
-          
-        });
-      
-
-      
-      d3.select('#resetButton')
-        .on('click', function(){
-          resetTrialData();
-          resetGraph();
-        })
-    </script>
+    
 </body>
 
 

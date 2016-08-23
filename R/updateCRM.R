@@ -18,6 +18,5 @@ updateModel = function(target, prior, data) {
   y <- data$y
   weights = data$weights
   foo <- titecrm(prior, target, y, level, weights = weights)
-  print(foo)
   return(list(estimate = foo$estimate, mtd = foo$mtd, ptox = data.frame(x=1:ln,y=foo$ptox), ptoxL = data.frame(x=1:ln,y=foo$ptoxL), ptoxU = data.frame(x=1:ln,y=foo$ptoxU)))
 }

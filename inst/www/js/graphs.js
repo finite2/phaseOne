@@ -33,7 +33,7 @@ function updateGraphSizevalues(g, hRatio){
 
 function paintHistogram(g, values) {
   d3.select('#' + g.id).selectAll('*').remove();
-  updateGraphSizevalues(g, 0.5);
+  updateGraphSizevalues(g, 0.35);
   g.fullWidth *= 0.5;
   g.fullHeight *= 0.5;
   g.margin = {top: 30, right: 20, bottom: 30, left: 50};
@@ -53,7 +53,6 @@ function paintHistogram(g, values) {
   .domain(g.x.domain())
     (values);
   
-  console.log('hi')
   g.y.domain([0, d3.max(data, function(d) { return d.length; })/ values.length])
   
   var svg = d3.select("#" + g.id)
@@ -63,8 +62,7 @@ function paintHistogram(g, values) {
     .append("g")
       .attr("transform", 
         "translate(" + g.margin.left + "," + g.margin.top + ")")
-  console.log(values)
-  console.log(data)
+
   var bar = svg.selectAll(".bar")
     .data(data)
   .enter().append("g")
@@ -93,7 +91,7 @@ function paintHistogram(g, values) {
 }
 
 function paintModelGraph(g) {
-  updateGraphSizevalues(g, 0.4);
+  updateGraphSizevalues(g, 0.35);
 
   // Set the dimensions of the canvas / graph
   g.margin = {top: 30, right: 20, bottom: 30, left: 50};
@@ -183,45 +181,11 @@ function paintModelGraph(g) {
 }
 
 
-newPatient = function() {
-  trialData.patients ++
-  
-  // var dose = getNextDose();
-  trialData.nextDose = Math.floor(trialData.nextDose);
-  console.log(dose);
-  if(cohortSize > 1) {
-    if(leftOnCohort > 0) {
-      trialData.nextDose = trialData.lastDose;
-    } else {
-      leftOnCohort = cohortSize;
-    }
-    leftOnCohort --
-  }
-  
-  var dose = trialData.nextDose  <= trialData.lastDose + 1 ? trialData.nextDose: trialData.lastDose + 1;
-  trialData.lastDose = dose
-  dose = Math.max(1,Math.min(dose, doseLevels.length));
-  var event = rbern(truth[dose]);
-  var weights = 1;
-  dta = {
-    x: dose,
-    y: event,
-    weights: weights,
-    ecount: event === 1 ? trialData.summaryData[dose].e + 1: trialData.summaryData[dose].n + 1
-  }
-  trialData.patientData.push(dta)
-  
-  if(event){
-    trialData.summaryData[dose].e ++;
-    trialData.toxicities ++;
-  } else {
-    trialData.summaryData[dose].n ++;
-  }
-}
+
 
 
 function paintDoseGraph(g) {
-  updateGraphSizevalues(g, 0.4);
+  updateGraphSizevalues(g, 0.35);
 
   // Set the dimensions of the canvas / graph
   g.margin = {top: 30, right: 20, bottom: 30, left: 50};
@@ -229,7 +193,7 @@ function paintDoseGraph(g) {
   g.height = g.fullHeight - g.margin.top - g.margin.bottom;
   
   // Set the ranges
-  g.x = d3.scaleLinear().range([0, g.width]).domain([-0.2, 8.2]);
+  g.x = d3.scaleLinear().range([0, g.width]).domain([0.5, 8.5]);
   g.y = d3.scaleLinear().range([g.height, 0]).domain([0.5, doseLevels.length + 0.5]);
   // Define the axes
   g.xAxis = d3.axisBottom().scale(g.x).ticks(8);
@@ -312,6 +276,14 @@ function rescalex(g, newMax) {
 
 }
 
+function updateTargetLine(g) {
+  g.svg.select('#targetLine')
+    .transition()
+    .duration(param.speed)
+      .attr("y1", g.y(setup.target))
+      .attr("y2", g.y(setup.target))
+}
+
 function addPatient(g) {
 
   newPatient();
@@ -330,8 +302,6 @@ function addPatient(g) {
       .attr('fill', g.cols[trialData.patientData[trialData.patients].y])
   
   addDosePatient(doseGraph)
-  console.log(trialData.patientData.length)
-  console.log(doseGraph.xMax)
   if(doseGraph.xMax < trialData.patientData.length){
     doseGraph.xMax = trialData.patientData.length
     rescalex(doseGraph, doseGraph.xMax)
@@ -361,7 +331,6 @@ function updateModelLine(g, data) {
 
 function updateModelLine(g, output) {
   // Make the changes
-  console.log(g)
   g.svg.select("#median")
       .transition()
       .duration(1500)
