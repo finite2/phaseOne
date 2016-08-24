@@ -9,6 +9,9 @@ var setup = {};
 setup.target = 0.4;
 setup.cohort = {};
 setup.prior = {};
+setup.prior.mean = [2.5, 1.5];
+setup.prior.variance = [0.64,0.13,0.13,0.64];
+
 
 
 
@@ -74,4 +77,4 @@ postGraph.prior = false;
 postGraph.posterior = true;
 paintModelGraph(postGraph);
 
-
+model.prior();

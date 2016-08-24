@@ -1,71 +1,81 @@
 
 
-function Model(id, name, fun, curve, inverse, curveDefined) {
+function Model(id, name, fun, prior) {
   this.id = id;
   this.name = name;
   this.fun = fun;
-  this.curve = curve;
-  this.inverse = inverse;
-  this.curveDefined = curveDefined;
+  this.prior = prior;
 }
 
+function oneParamNormalPrior(){
+d3.select('#priorUI').select('div').remove();
+var ui = d3.select('#priorUI').append('div')
+
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html('Mean');
+
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html("<input class='smallBox' onchange='updateMean(0)' id='mean0' type='number' value='2.5' step='0.01'>");
+  
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html('Variance');
+  
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html("<input id='sigma0' class='smallBox' onchange='updateSigma(0)' type='number' value='0.64' step='0.01'>");
+
+}
+
+function updateMean(i){
+  setup.prior.mean[i] = parseFloat(d3.select('#mean' + i).node().value);
+}
+
+function updateSigma(i){
+  setup.prior.sigma[i] = parseFloat(d3.select('#sigma' + i).node().value);
+}
+
+function twoParamNormalPrior(){
+d3.select('#priorUI').select('div').remove();
+var ui = d3.select('#priorUI').append('div')
+
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html('Mean');
+
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html("<input class='smallBox' id='mean0' type='number' value='2.5' step='0.01'><input id='mean1' class='smallBox' type='number' value='1.5' step='0.01'>");
+  
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html('Variance');
+  
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html("<input id='sigma0' class='smallBox' onchange='updateSigma(0)' type='number' value='0.64' step='0.01'><input id='sigma1' class='smallBox' onchange='updateSigma(1)' type='number' value='0.13' step='0.01'>");
+ui.append('div')
+  .attr('class','col-xs-6')
+ui.append('div')
+  .attr('class','col-xs-6')
+  .html("<input id='sigma2' class='smallBox' onchange='updateSigma(2)' type='number' value='0.13' step='0.01'><input id='sigma3' class='smallBox' onchange='updateSigma(3)' type='number' value='0.64' step='0.01'>");
+
+}
 
 var models = []
-/* Bayesian two parameter logistic */
+
 models[0] = new Model(
   id = 0,
-  name = "Bayes Two Parameter Logistic TITE-CRM",
-  fun = function bayesTwoParamLogistic(g) {
-  var req = ocpu.rpc("runModel", {
-      data: trialData.patientData,
-    }, 
-    function(output){
-      // data from R output to console
-      // console.log(output);
-    
-      // data for finding next dose goes into mFit
-      output.mFit = {a: output.summary[0][4], b: output.summary[1][4]};
-      // get next dose based on model
-      trialData.nextDose = nextDose(output);
-      
-      
-      
-      if(g.prior) {
-        priorData = output
-        updateModelLine(priorGraph, output);
-        updateModelLine(modelGraph, output);
-        updateModelLine(postGraph, output);
-        paintHistogram(priorHist0, priorData.params[0]);
-        paintHistogram(priorHist1, priorData.params[1]);
-        paintHistogram(postHist0, priorData.params[0]);
-        paintHistogram(postHist1, priorData.params[1]);
-
-      } else {
-        paintHistogram(postHist0, output.params[0])
-        paintHistogram(postHist1, output.params[1])
-        updateModelLine(modelGraph, output);
-        updateModelLine(postGraph, output);
-      }
-    
-    });
-},
-  curve = function(x, param) {
-    return invLogit(param.a + param.b * x);
-  },
-  inverse = function(param) {
-    return (- Math.log((1 / setup.target) - 1) - param.a)/param.b
-  },
-  curveDefined = function(){ return 200}
-)
-
-models[1] = new Model(
-  id = 0,
-  name = "bcrm Bayes One Parameter Logistic TITE-CRM",
+  name = "Bayes One Parameter Logistic TITE-CRM (bcrm)",
   fun = function(g) {
   var req = ocpu.rpc("runModelLogisticOne", {
       data: trialData.summaryData,
       targetTox: setup.target,
-      inDoses: [1,2,3,4,5,6,7]
+      inDoses: [1,2,3,4,5,6,7],
+      mean: setup.prior.mean[0],
+      variance: setup.prior.variance[0]
     }, 
     function(output){
       // data from R output to console
@@ -97,18 +107,14 @@ models[1] = new Model(
     
     });
   },
-  curve = function(x, param) {
-    return invLogit(param.a + param.b * x);
-  },
-  inverse = function(param) {
-    return (- Math.log((1 / setup.target) - 1) - param.a)/param.b
-  },
-  curveDefined = function(){ return 200}
+  prior = function(){
+    oneParamNormalPrior()
+  }
 )
 
-models[2] = new Model(
+models[1] = new Model(
   id = 0,
-  name = "bcrm Bayes Two Parameter Logistic TITE-CRM",
+  name = "Bayes Two Parameter Logistic TITE-CRM (bcrm)",
   fun = function(g) {
   var req = ocpu.rpc("runModelLogisticTwo", {
       data: trialData.summaryData,
@@ -143,13 +149,9 @@ models[2] = new Model(
     
     });
 },
-  curve = function(x, param) {
-    return invLogit(log(param.a + param.b * x);
-  },
-  inverse = function(param) {
-    return (- Math.log((1 / setup.target) - 1) - param.a)/param.b
-  },
-  curveDefined = function(){ return 200}
+  prior = function(){
+    twoParamNormalPrior()
+  }
 )
 
 

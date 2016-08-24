@@ -34,6 +34,7 @@ d3.select("#smodel")
     model = models[d3.select('#smodel').property('selectedIndex')];
     console.log(model.name);
     rerunModel();
+    model.prior();
 });
 
 d3.select('#submitbutton')
@@ -68,6 +69,8 @@ d3.select('#submitMany')
     //resetGraph();
     addPatients(sPatients);
 });
+
+
 
 
 

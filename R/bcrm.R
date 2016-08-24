@@ -3,7 +3,7 @@
 
 
 #' @export runModelLogisticOne
-runModelLogisticOne = function(data = NULL, targetTox = 0.4, inDoses = 1:7) {
+runModelLogisticOne = function(data = NULL, targetTox = 0.4, inDoses = 1:7, mean = 1, variance = 0.64) {
 
   ## Power functional form
   ff<-"logit1"
@@ -18,7 +18,7 @@ runModelLogisticOne = function(data = NULL, targetTox = 0.4, inDoses = 1:7) {
   dose <- nDose(inDoses)
 
   ## Lognormal prior
-  prior.alpha<-list(3,1,0.8^2)
+  prior.alpha<-list(3,mean, variance)
   ## Pre-specified probabilities of toxicity
   ## [dose levels 11-15 not specified in the paper, and are for illustration only]
   ## Data from the first 5 cohorts of 18 patients
@@ -54,7 +54,7 @@ runModelLogisticOne = function(data = NULL, targetTox = 0.4, inDoses = 1:7) {
   }
 
 
-  return(list(params = post, median = median(post),
+  return(list(params = log(t(post)), median = median(post),
               model = data.frame(x=x,y=y[,2]),
               modelL = data.frame(x=x,y=y[,1]),
               modelU = data.frame(x=x,y=y[,3]),
@@ -78,7 +78,7 @@ runModelLogisticTwo = function(data = NULL, targetTox = 0.4, inDoses = 1:7) {
   dose <- nDose(inDoses)
 
   ## Lognormal prior
-  mu<-c(1.65,0.52)
+  mu<-c(2.5,1.5)
   Sigma<-rbind(c(0.84^2,0.134),c(0.134,0.80^2))
   prior.alpha<-list(4,mu,Sigma)
   ## Pre-specified probabilities of toxicity
@@ -116,7 +116,7 @@ runModelLogisticTwo = function(data = NULL, targetTox = 0.4, inDoses = 1:7) {
   }
 
 
-  return(list(params = t(post), median = c(median(post[,1]),median(post[,2])),
+  return(list(params = log(t(post)), median = c(median(post[,1]),median(post[,2])),
               model = data.frame(x=x,y=y[,2]),
               modelL = data.frame(x=x,y=y[,1]),
               modelU = data.frame(x=x,y=y[,3]),
