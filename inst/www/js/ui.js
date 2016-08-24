@@ -22,7 +22,7 @@ d3.select('#smodel').selectAll("option").data(models).enter()
 
 d3.select('#target')
   .on('input', function(){
-  setup.target = this.value;
+  setup.target = parseFloat(this.value);
   updateTargetLine(priorGraph);
   updateTargetLine(modelGraph);
   updateTargetLine(postGraph);

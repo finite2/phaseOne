@@ -24,7 +24,7 @@ models[0] = new Model(
       // console.log(output);
     
       // data for finding next dose goes into mFit
-      output.mFit = {a: output.summary[0][4], b: output.summary[1][4]}
+      output.mFit = {a: output.summary[0][4], b: output.summary[1][4]};
       // get next dose based on model
       trialData.nextDose = nextDose(output);
       
@@ -57,6 +57,101 @@ models[0] = new Model(
   },
   curveDefined = function(){ return 200}
 )
+
+models[1] = new Model(
+  id = 0,
+  name = "bcrm Bayes One Parameter Logistic TITE-CRM",
+  fun = function(g) {
+  var req = ocpu.rpc("runModelLogisticOne", {
+      data: trialData.summaryData,
+      targetTox: setup.target,
+      inDoses: [1,2,3,4,5,6,7]
+    }, 
+    function(output){
+      // data from R output to console
+      console.log(output);
+    
+      // data for finding next dose goes into mFit
+      output.mFit = {a: -3, b: output.median};
+      // get next dose based on model
+      trialData.nextDose = nextDose(output);
+      
+      
+      
+      if(g.prior) {
+        priorData = output
+        updateModelLine(priorGraph, output);
+        updateModelLine(modelGraph, output);
+        updateModelLine(postGraph, output);
+        paintHistogram(priorHist0, priorData.params);
+        //paintHistogram(priorHist1, priorData.params[1]);
+        paintHistogram(postHist0, priorData.params);
+        //paintHistogram(postHist1, priorData.params[1]);
+
+      } else {
+        paintHistogram(postHist0, output.params)
+        //paintHistogram(postHist1, output.params[1])
+        updateModelLine(modelGraph, output);
+        updateModelLine(postGraph, output);
+      }
+    
+    });
+  },
+  curve = function(x, param) {
+    return invLogit(param.a + param.b * x);
+  },
+  inverse = function(param) {
+    return (- Math.log((1 / setup.target) - 1) - param.a)/param.b
+  },
+  curveDefined = function(){ return 200}
+)
+
+models[2] = new Model(
+  id = 0,
+  name = "bcrm Bayes Two Parameter Logistic TITE-CRM",
+  fun = function(g) {
+  var req = ocpu.rpc("runModelLogisticTwo", {
+      data: trialData.summaryData,
+    }, 
+    function(output){
+      // data from R output to console
+      console.log(output);
+    
+      // data for finding next dose goes into mFit
+      output.mFit = {a: output.median[0], b: output.median[1][4]};
+      // get next dose based on model
+      trialData.nextDose = nextDose(output);
+      
+      
+      
+      if(g.prior) {
+        priorData = output
+        updateModelLine(priorGraph, output);
+        updateModelLine(modelGraph, output);
+        updateModelLine(postGraph, output);
+        paintHistogram(priorHist0, priorData.params[0]);
+        paintHistogram(priorHist1, priorData.params[1]);
+        paintHistogram(postHist0, priorData.params[0]);
+        paintHistogram(postHist1, priorData.params[1]);
+
+      } else {
+        paintHistogram(postHist0, output.params[0])
+        paintHistogram(postHist1, output.params[1])
+        updateModelLine(modelGraph, output);
+        updateModelLine(postGraph, output);
+      }
+    
+    });
+},
+  curve = function(x, param) {
+    return invLogit(log(param.a + param.b * x);
+  },
+  inverse = function(param) {
+    return (- Math.log((1 / setup.target) - 1) - param.a)/param.b
+  },
+  curveDefined = function(){ return 200}
+)
+
 
 /* Bayes One Parameter Power CRM
 models[1] = new Model(

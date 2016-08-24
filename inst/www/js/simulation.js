@@ -6,7 +6,7 @@ newPatient = function() {
   
   // var dose = getNextDose();
   trialData.nextDose = Math.floor(trialData.nextDose);
-  console.log(dose);
+  //console.log(dose);
   if(cohortSize > 1) {
     if(leftOnCohort > 0) {
       trialData.nextDose = trialData.lastDose;
@@ -19,7 +19,7 @@ newPatient = function() {
   var dose = trialData.nextDose  <= trialData.lastDose + 1 ? trialData.nextDose: trialData.lastDose + 1;
   trialData.lastDose = dose
   dose = Math.max(1,Math.min(dose, doseLevels.length));
-  console.log(truth)
+  //console.log(truth)
   var event = rbern(truth[dose-1]);
   var weights = 1;
   dta = {

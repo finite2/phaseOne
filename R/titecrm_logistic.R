@@ -21,12 +21,11 @@ runModel=function(data){
 
   y = data$y
   x = data$x
-  w = data$weights
 
 
   jags.model=function() {
     for(i in 1:n) {
-      y[i] ~ dbern(pow(theta[i],w[i]))
+      y[i] ~ dbern(theta[i])
 
       logit(theta[i]) <- alpha + beta * x[i]
     }
@@ -38,7 +37,7 @@ runModel=function(data){
   jagsVar=jagsVariables(model.file=jags.model,nSample=5000,burnin=500,nThin=1,n.chains=1,parameters.to.save=c("alpha", "beta"))
   n=length(y)
 
-  j = jags(data=c("y","x","w","n"),
+  j = jags(data=c("y","x","n"),
            n.chains=jagsVar@n.chains,
            model.file=jagsVar@model.file,
            parameters.to.save=jagsVar@parameters.to.save,
@@ -53,8 +52,8 @@ runModel=function(data){
     y[i,]=quantile(inv_logit(j$BUGSoutput$sims.list$alpha + x[i]*j$BUGSoutput$sims.list$beta),c(0.025,0.5,0.975))
   }
   target = 0.4
-  x1 = 0.5
-  x2 = 7.5
+  x1 = 0
+  x2 = 30
   while(x2-x1 > 0.05){
     xmed = (x2-x1)/2 + x1
     if(target - quantile(inv_logit(j$BUGSoutput$sims.list$alpha + xmed*j$BUGSoutput$sims.list$beta),0.5) > 0){
