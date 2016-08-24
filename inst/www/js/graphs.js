@@ -21,6 +21,7 @@ function resetTrialData() {
 
 function resetGraph() {
   d3.select('#patients').selectAll("*").remove();
+  d3.select('#dosePatients').selectAll("*").remove();
   rerunModel();
   
 }

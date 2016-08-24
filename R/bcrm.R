@@ -1,5 +1,10 @@
 #' @import bcrm
 
+# useful functions
+#' @export inv_logit
+#' @export logit
+inv_logit=function(alpha) 1/(1+exp(-alpha))
+logit=function(p) log(p/(1-p))
 
 
 #' @export runModelLogisticOne
