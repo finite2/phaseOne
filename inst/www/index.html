@@ -27,13 +27,13 @@
     <div class="col-md-3">
       <div class="tabbable">
         <ul id="tabs" class="nav nav-tabs">
-          <li class="active mtab"><a href='#setup' data-toggle="tab">Setup</a></li>
+          <li class="active mtab"><a href='#setupUI' data-toggle="tab">Setup</a></li>
           <li class="mtab"><a href='#priorUI' data-toggle="tab">Prior</a></li>
           <li class="mtab"><a href='#simulate' data-toggle="tab">Simulate patient</a></li>
           <li class="mtab"><a href='#truth' data-toggle="tab">Truth</a></li>
         </ul>
         <div id="tside" class="tab-content">
-          <div id="setup" class='tab-pane active'>
+          <div id="setupUI" class='tab-pane active'>
             <div class="row center">
                 <div class="col-xs-6 frm">
                   <h5>Target toxicity level</h5>
@@ -69,7 +69,8 @@
             </div>
           </div>
           <div id = "priorUI" class="tab-pane">
-            <div></div>
+            <div id="priorDist"></div>
+            <button id="updatePrior" type="button" class="btn btn-primary">Update Prior</button>
           </div>
           <div id = "truth" class="tab-pane">
             <div class="row center">

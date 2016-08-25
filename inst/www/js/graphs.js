@@ -1,23 +1,7 @@
 
 
 
-function resetTrialData() {
-  trialData.patients = -1;
-  trialData.patientData = [];
-  trialData.toxicities = 0;
-  trialData.summaryData = [
-    {e: 0, n: 0},
-    {e: 0, n: 0},
-    {e: 0, n: 0},
-    {e: 0, n: 0},
-    {e: 0, n: 0},
-    {e: 0, n: 0},
-    {e: 0, n: 0},
-    {e: 0, n: 0}
-  ];
-  trialData.lastDose = 1;
-  trialData.nextDose = 1;
-}
+
 
 function resetGraph() {
   d3.select('#patients').selectAll("*").remove();
@@ -63,7 +47,6 @@ function paintHistogram(g, values) {
     .append("g")
       .attr("transform", 
         "translate(" + g.margin.left + "," + g.margin.top + ")")
-
   var bar = svg.selectAll(".bar")
     .data(data)
   .enter().append("g")
@@ -102,7 +85,7 @@ function paintModelGraph(g) {
   
 
   // Set the ranges
-  g.x = d3.scaleLinear().range([0, g.width]).domain([0.5, doseLevels.length + 0.5]);
+  g.x = d3.scaleLinear().range([0, g.width]).domain([0.5, doses.length + 0.5]);
   g.y = d3.scaleLinear().range([g.height, 0]).domain([0, 1]);
   // Define the axes
   g.xAxis = d3.axisBottom().scale(g.x).ticks(8);
@@ -195,10 +178,10 @@ function paintDoseGraph(g) {
   
   // Set the ranges
   g.x = d3.scaleLinear().range([0, g.width]).domain([0.5, 8.5]);
-  g.y = d3.scaleLinear().range([g.height, 0]).domain([0.5, doseLevels.length + 0.5]);
+  g.y = d3.scaleLinear().range([g.height, 0]).domain([0.5, doses.length + 0.5]);
   // Define the axes
   g.xAxis = d3.axisBottom().scale(g.x).ticks(8);
-  g.yAxis = d3.axisLeft().scale(g.y).ticks(doseLevels.length);
+  g.yAxis = d3.axisLeft().scale(g.y).ticks(doses.length);
   // Define the line
 
   // Adds the svg canvas
@@ -215,7 +198,7 @@ function paintDoseGraph(g) {
     .attr("id", "Hlines")
   
   d3.select('#Hlines')
-    .selectAll('line').data(doseLevels)
+    .selectAll('line').data(doses)
       .enter()
       .append('line')
       .attr('x1', g.x(g.x.domain()[0]))
@@ -308,17 +291,12 @@ function addPatient(g) {
     rescalex(doseGraph, doseGraph.xMax)
   }
   if (param.rConnected) {
-    model.fun(g)
+    model.fun(false, true)
   }
-    
-    
+
 }
 
-function addPatients(n) {
-  for(var i=0; i<n; i++){
-    setTimeout(function() {addPatient(modelGraph)}, i * 2*param.speed)
-  }
-}
+
 
 
 // ** Update data section (Called from the onclick)
@@ -355,9 +333,6 @@ function updateModelLine(g, output) {
 
 }
 
-function rerunModel() {
-  if (param.rConnected) {
-    model.fun(modelGraph)
-  }
+function removeGraph(g) {
+  d3.select('#' + g.id).selectAll('*').remove();
 }
-

@@ -32,9 +32,16 @@ d3.select('#target')
 d3.select("#smodel")
   .on('change', function(){
     model = models[d3.select('#smodel').property('selectedIndex')];
+    model.priorUI();
     console.log(model.name);
-    rerunModel();
-    model.prior();
+  if(param.rConnected){
+    model.fun(false,true);
+  }
+});
+
+d3.select('#updatePrior')
+  .on('click', function(){
+    model.fun(true, false);
 });
 
 d3.select('#submitbutton')
@@ -50,16 +57,16 @@ d3.select('#nDoses')
     getTruth(doses)
   });
 
-sPatients = 10
+
 d3.select('#sPatients')
   .on('input', function(){
-    sPatients = this.value;
-    d3.select('#manyPatients').text(sPatients);
+    param.sPatients = this.value;
+    d3.select('#manyPatients').text(param.sPatients);
   });
 
 d3.select('#cohortSize')
   .on('input', function(){
-    cohortSize = this.value;
+    setup.cohortSize = this.value;
   })
 
 d3.select('#submitMany')
@@ -67,7 +74,7 @@ d3.select('#submitMany')
 
     //resetTrialData();
     //resetGraph();
-    addPatients(sPatients);
+    addPatients(param.sPatients);
 });
 
 
