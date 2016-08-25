@@ -18,7 +18,7 @@ runModelLogisticOne = function(data = NULL, targetTox = 0.4, inDoses = 1:7, mean
   x1 = 0
   x2 = 10
   nDose = function(x){
-    log(x/10)
+    log(x/12)
   }
   dose <- nDose(inDoses)
 
@@ -78,7 +78,7 @@ runModelLogisticTwo = function(data = NULL, targetTox = 0.4, inDoses = 1:7, mean
   x1 = 0.5
   x2 = 10
   nDose = function(x){
-    log(x/10)
+    log(x/12)
   }
   dose <- nDose(inDoses)
 
@@ -136,15 +136,10 @@ runModelPower = function(data = NULL, targetTox = 0.4, inDoses = 1:7, mean = 1, 
   ## Power functional form
   ff <- "power"
 
-  p.tox0 <- c(0.010,0.015,0.020,0.025,0.030,0.040,0.050,0.100,0.170,0.300,0.400,0.500,0.650,0.800,0.900)
-
-
-  print(data)
-
   x1 = 0
   x2 = 10
   nDose = function(x){
-    log(x/10)
+    log(x/12)
   }
   dose <- nDose(inDoses)
 

@@ -33,6 +33,7 @@ d3.select("#smodel")
   .on('change', function(){
     model = models[d3.select('#smodel').property('selectedIndex')];
     model.priorUI();
+    addDescription();
     console.log(model.name);
   if(param.rConnected){
     model.fun(false,true);
@@ -54,7 +55,8 @@ d3.select('#nDoses')
     nDoses = parseInt(this.value);
     doses = truth.slice(0,nDoses)
     d3.select('#doses div').remove();
-    getTruth(doses)
+    getTruth(doses);
+    model.priorUI();
   });
 
 

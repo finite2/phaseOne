@@ -1,10 +1,11 @@
 
 
-function Model(id, name, fun, priorUI) {
+function Model(id, name, fun, priorUI, description) {
   this.id = id;
   this.name = name;
   this.fun = fun;
   this.priorUI = priorUI;
+  this.description = description;
 }
 
 function oneParamNormalPrior(){
@@ -28,15 +29,35 @@ ui.append('div')
   .html("<input id='sigma0' class='smallBox' onchange='updateSigma(0)' type='number' value='0.64' step='0.01'>");
 }
 
-function updateMean(i){
+function initialPowerPrior(){
+  var ui = d3.select('#priorDist').append('div')
+  
+  ui.append('div')
+  .attr('class','col-xs-12')
+  .html('Initial probabilities');
+  for(i = 0; i < doses.length; i++){
+    ui.append('div')
+    .attr('class','col-xs-6')
+    .html('Dose level ' + (i+1));
+    ui.append('div')
+    .attr('class','col-xs-6')
+    .html("<input id='power" + i + "' class='smallBox' onchange='updatePower(" + i + ")' type='number' value='0.64' step='0.01'>");
+  }
+}
+
+function updateMean(i) {
   setup.prior.mean[i] = parseFloat(d3.select('#mean' + i).node().value);
 }
 
-function updateSigma(i){
+function updateSigma(i) {
   setup.prior.sigma[i] = parseFloat(d3.select('#sigma' + i).node().value);
 }
 
-function twoParamNormalPrior(){
+function updatePower(i) {
+  setup.prior.power[i] = parseFloat(d3.select('#power' + i).node().value);
+}
+
+function twoParamNormalPrior() {
 d3.select('#priorDist').select('div').remove();
 var ui = d3.select('#priorDist').append('div')
 
@@ -61,6 +82,12 @@ ui.append('div')
   .attr('class','col-xs-6')
   .html("<input id='sigma2' class='smallBox' onchange='updateSigma(2)' type='number' value='0.13' step='0.01'><input id='sigma3' class='smallBox' onchange='updateSigma(3)' type='number' value='0.64' step='0.01'>");
 
+}
+
+function addDescription() {
+  d3.select('#description').selectAll('*').remove();
+  d3.select('#description').append('div')
+    .html(model.description)
 }
 
 var models = []
@@ -109,7 +136,8 @@ models[0] = new Model(
   },
   priorUI = function(){
     oneParamNormalPrior()
-  }
+  },
+  description = "<h3>Bayes One Parameter Logistic TITE-CRM (bcrm)</h3><p>This is the Bayesian One parameter Logistic regression model.</p>"
 )
 
 models[1] = new Model(
@@ -154,7 +182,8 @@ models[1] = new Model(
 },
   priorUI = function(){
     twoParamNormalPrior()
-  }
+  },
+  description = "<h3>Bayes Two Parameter Logistic TITE-CRM (bcrm)</h3><p>This is the Bayesian Two parameter Logistic regression model.</p>"
 )
 
 models[2] = new Model(
@@ -199,8 +228,9 @@ models[2] = new Model(
     });
 },
   priorUI = function(){
-    oneParamNormalPrior()
-  }
+    oneParamNormalPrior();
+  },
+  description = "<h3>Bayes One Parameter Power TITE-CRM (bcrm)</h3><p>This is the Bayesian One parameter Power model.</p>"
 )
 
 

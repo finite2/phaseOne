@@ -12,6 +12,7 @@ setup.cohort = {};
 setup.prior = {};
 setup.prior.mean = [2.5, 1.5];
 setup.prior.variance = [0.64,0.13,0.13,0.64];
+setup.prior.initialProb = [0.010,0.015,0.020,0.025,0.030,0.040,0.050,0.100,0.170,0.300,0.400,0.500,0.650,0.800,0.900]
 setup.cohortSize = 2;
 setup.trialData = {}
 resetTrialData(setup.trialData)
@@ -76,6 +77,7 @@ postGraph.posterior = true;
 paintModelGraph(postGraph);
 
 model.priorUI();
+addDescription();
 
 if (param.rConnected) {
   model.fun(true, true);
